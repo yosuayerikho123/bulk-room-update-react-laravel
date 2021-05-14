@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::post("/api/custom", "CustomDatesController@insertMultiple");
+Route::get("/api/custom", "CustomDatesController@retrieveAll");
+
+Route::post("/api/rooms", "RoomsController@store");
+Route::get("/api/rooms", "RoomsController@retrieveAll");

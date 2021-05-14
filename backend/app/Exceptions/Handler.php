@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -40,6 +41,13 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * @return bool check if need a json
+     */
+    private function isAjax(){
+        return request()->wantsJson() && request()->ajax();
+    }
+
+    /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -50,6 +58,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ValidationException) {
+            return response()->json(["error" => $exception->errors(), "status" => 422], 422);
+        }
         return parent::render($request, $exception);
     }
 }

@@ -24,14 +24,16 @@ function Modal({ rooms, setModal, selectedRooms }) {
 	const [amount, setAmount] = useState(0);
 	const [applyDays, setApplyDays] = useState([]);
 
+	// handle checked days
 	const handleCheck = function(e, day) {
 		const checked = e.target.checked;
 		const index = applyDays.indexOf(day);
 		const days = applyDays;
 
+		// push if not exists
 		if (checked && index === -1) {
 			days.push(day);
-		} else if (!checked && index >= 0) {
+		} else if (!checked && index >= 0) { // splice if exists
 			days.splice(index, 1);
 		}
 
@@ -39,6 +41,7 @@ function Modal({ rooms, setModal, selectedRooms }) {
 	}
 
 	const update = function() {
+		// filter rooms, get the rooms with checked day
 		const days = selectedRooms.filter(function(item) {
 			const includes = applyDays.includes(item.moment.format('ddd'));
 
@@ -54,7 +57,9 @@ function Modal({ rooms, setModal, selectedRooms }) {
 				{
 					value => (
 						<div className="fixed flex justify-center items-center top-0 left-0 justify-center h-screen items-center w-screen">
-							<div onClick={() => setModal(false)} className="absolute h-screen w-screen top-0 left-0 bg-gray-600 bg-opacity-50"></div>
+							<div onClick={() => setModal(false)} className="absolute h-screen w-screen top-0 left-0 bg-gray-600 bg-opacity-50">
+
+							</div>
 							<div className="bg-white w-3/6 relative z-10 rounded-md">
 								<div className="flexbox">
 									<h1 className="text-base p-4">Adjust Price</h1>
@@ -150,6 +155,7 @@ function BulkUpdate() {
         setDates([...dates]);
 	};
 
+	// create rooms based on rooms name
 	const createRooms = () => {
 		let localRooms = Array(roomsName.length).fill([]);
         localRooms = localRooms.map((item, index) => {
