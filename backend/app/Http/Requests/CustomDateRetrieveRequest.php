@@ -4,7 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CustomDatesInsertRequest extends FormRequest
+/**
+ * @property mixed rooms
+ * @property mixed dates
+ */
+class CustomDateRetrieveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +28,10 @@ class CustomDatesInsertRequest extends FormRequest
     public function rules()
     {
         return [
-            "rooms_id"      => "required|integer|min:1",
-            "price"         => "required|integer|min:1",
-            "dates"         => "required|array|min:1",
-            "dates.*"       => "required|date",
+            "rooms"         => "required|array|min:1",
+            "rooms.*"       => "required|integer",
+            "dates"         => "required|array|min:2|max:2",
+            "dates.*"       => "required|date"
         ];
     }
 }

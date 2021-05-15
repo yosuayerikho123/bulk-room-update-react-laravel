@@ -29,4 +29,13 @@ interface CustomDatesInterface
      * @return mixed
      */
     public function deleteInDates(int $room_id, array $dates);
+
+    /**
+     * Find the rooms price between dates
+     *
+     * @param array $rooms_id
+     * @param array $dates_between
+     * @return mixed
+     */
+    public function betweenDates(array $rooms_id, array $dates_between);
 }

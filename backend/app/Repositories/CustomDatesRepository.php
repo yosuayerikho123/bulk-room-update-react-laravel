@@ -52,4 +52,16 @@ class CustomDatesRepository implements CustomDatesInterface
     {
         return $this->model->whereIn("dates", $dates)->where("rooms_id", $room_id)->delete();
     }
+
+    /**
+     * Find the rooms price between dates
+     *
+     * @param array $rooms_id
+     * @param array $dates_between
+     * @return mixed
+     */
+    public function betweenDates(array $rooms_id, array $dates_between)
+    {
+        return $this->model->whereIn("rooms_id", $rooms_id)->whereBetween("dates", $dates_between)->get();
+    }
 }

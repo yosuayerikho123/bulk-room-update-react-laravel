@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post("/api/custom", "CustomDatesController@insertMultiple");
-Route::get("/api/custom", "CustomDatesController@retrieveAll");
+Route::get("/api/custom", "CustomDatesController@findBetween");
 
 Route::post("/api/rooms", "RoomsController@store");
 Route::get("/api/rooms", "RoomsController@retrieveAll");

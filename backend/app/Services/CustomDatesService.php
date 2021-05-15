@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Repositories\CustomDatesRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CustomDatesService
@@ -21,15 +22,31 @@ class CustomDatesService
     }
 
     /**
+     * Find the custom room price between dates
+     *
+     * @param array $rooms_id
+     * @param array $dates
+     * @return mixed
+     */
+    public function findCustomRoomsBetweenDates(array $rooms_id, array $dates)
+    {
+        $dates[0] = Carbon::parse($dates[0])->format("Y-m-d");
+        $dates[1] = Carbon::parse($dates[1])->format("Y-m-d");
+
+        return $this->repository->betweenDates($rooms_id, $dates);
+    }
+
+    /**
      * Insert data into database
      *
      * @param int $rooms_id
-     * @param array $data
+     * @param array $dates
+     * @param int $price
      * @return array
      */
-    public function insert(int $rooms_id, array $data)
+    public function insert(int $rooms_id, array $dates, int $price)
     {
-        $collection = collect($data);
+        $dates = collect($dates);
         $response = [
             "message"   => "Insert successfully",
             "status"    => 200
@@ -37,18 +54,20 @@ class CustomDatesService
 
         DB::beginTransaction();
         try {
-            // make array unique then pluck the date
-            $unique = $collection->unique("date");
-
-            $dates = $unique->pluck("date")->toArray();
-            $array = $unique->map(function ($item) use($rooms_id) {
-                $item["rooms_id"] = $rooms_id;
-                $item["dates"] = $item["date"];
-                unset($item["date"]);
-
-                return $item;
+            $dates = $dates->map(function ($date) {
+                 return Carbon::parse($date)->format("Y-m-d");
             });
-            $this->repository->deleteInDates($rooms_id, $dates);
+
+            $array = $dates->map(function ($date, $index) use($rooms_id, $price) {
+
+                return [
+                    "rooms_id"      => $rooms_id,
+                    "price"         => $price,
+                    "dates"         => $date
+                ];
+            });
+            DB::connection()->enableQueryLog();
+            $this->repository->deleteInDates($rooms_id, $dates->toArray());
             $this->repository->insert($array->toArray());
 
             DB::commit();
